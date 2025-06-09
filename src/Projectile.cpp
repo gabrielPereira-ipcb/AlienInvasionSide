@@ -18,14 +18,15 @@
 // These are declared in BibSistema.h and defined in GlobalVars.cpp
 extern GLfloat coordenadasMundo[4]; // {Xmin, Xmax, Ymin, Ymax}
 
-Projectile::Projectile(float startX, float startY) {
+Projectile::Projectile(float startX, float startY, float velX, float velY, bool isPlayer) {
     this->x = startX;
     this->y = startY;
-    this->speed = 2.0f; // Fixed increment per update() call for now. Units: world units per update.
-                        // If deltaTime was used, this would be world units per second.
+    this->vx = velX;
+    this->vy = velY;
     this->active = true;
-    this->width = 1.0f;  // Example width of the projectile
-    this->height = 4.0f; // Example height of the projectile (a thin rectangle)
+    this->width = 1.0f;  // Example width
+    this->height = 4.0f; // Example height (thin rectangle)
+    this->isPlayerProjectile = isPlayer;
 }
 
 void Projectile::update(float deltaTime) {
@@ -33,13 +34,15 @@ void Projectile::update(float deltaTime) {
         return;
     }
 
-    // Using a fixed increment for movement upwards, as deltaTime is not yet fully integrated
-    // To use deltaTime: this->y += this->speed * deltaTime;
-    // For now:
-    this->y += this->speed; // Move projectile up by 'speed' units each frame/update call
+    this->x += this->vx * deltaTime;
+    this->y += this->vy * deltaTime;
 
-    // Deactivate if it goes off the top of the screen
-    if (this->y - this->height / 2 > coordenadasMundo[3]) { // Check if bottom of projectile is above Ymax
+    // Deactivate if it goes off any screen edge
+    if (this->x - this->width / 2 > coordenadasMundo[1] || // Off right
+        this->x + this->width / 2 < coordenadasMundo[0] || // Off left
+        this->y - this->height / 2 > coordenadasMundo[3] || // Off top
+        this->y + this->height / 2 < coordenadasMundo[2])   // Off bottom
+    {
         this->active = false;
     }
 }
@@ -49,7 +52,11 @@ void Projectile::render() {
         return;
     }
 
-    glColor3f(1.0f, 1.0f, 1.0f); // White color for player projectile
+    if (this->isPlayerProjectile) {
+        glColor3f(1.0f, 1.0f, 1.0f); // White color for player projectile
+    } else {
+        glColor3f(1.0f, 0.5f, 0.0f); // Orange-Red for invader projectiles (distinguishable)
+    }
 
     // Calculate corners based on center (x,y) and width/height
     float left = this->x - this->width / 2;

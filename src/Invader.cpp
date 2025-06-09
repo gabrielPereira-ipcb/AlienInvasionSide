@@ -19,11 +19,26 @@
 // If not in BibSistema.h, this extern declaration makes it available from GlobalVars.cpp
 extern GLfloat invaderTamanho;
 
-Invader::Invader(float startX, float startY) {
+Invader::Invader(float startX, float startY, InvaderType invaderType) {
     this->x = startX;
     this->y = startY;
     this->active = true;
-    // this->type = 0; // Default type for now
+    this->type = invaderType;
+
+    switch (this->type) {
+        case InvaderType::EXPLORER:
+            this->pointsValue = 10;
+            break;
+        case InvaderType::SOLDIER:
+            this->pointsValue = 20;
+            break;
+        case InvaderType::COMMANDER:
+            this->pointsValue = 30;
+            break;
+        default:
+            this->pointsValue = 0; // Should not happen
+            break;
+    }
 }
 
 void Invader::render() {
@@ -31,7 +46,20 @@ void Invader::render() {
         return;
     }
 
-    glColor3f(1.0f, 0.0f, 0.0f); // Red color for invaders
+    switch (this->type) {
+        case InvaderType::EXPLORER:
+            glColor3f(1.0f, 0.5f, 0.5f); // Light Red/Pink for Explorer
+            break;
+        case InvaderType::SOLDIER:
+            glColor3f(1.0f, 1.0f, 0.5f); // Light Yellow for Soldier
+            break;
+        case InvaderType::COMMANDER:
+            glColor3f(0.5f, 1.0f, 1.0f); // Light Cyan for Commander
+            break;
+        default:
+            glColor3f(0.7f, 0.7f, 0.7f); // Grey for default/error
+            break;
+    }
 
     // Draw a simple square for the invader
     float halfSize = invaderTamanho / 2.0f;

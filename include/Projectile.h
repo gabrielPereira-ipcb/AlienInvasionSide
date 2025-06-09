@@ -6,13 +6,15 @@
 class Projectile {
 public:
     float x, y;
-    float speed;
+    // float speed; // Replaced by vx, vy
     bool active;
     float width;
     float height;
+    bool isPlayerProjectile;
+    float vx, vy; // Velocity components
 
-    Projectile(float startX, float startY);
-    void update(float deltaTime); // deltaTime for future use, might use fixed step for now
+    Projectile(float startX, float startY, float velX, float velY, bool isPlayer = true);
+    void update(float deltaTime);
     void render();
 };
 

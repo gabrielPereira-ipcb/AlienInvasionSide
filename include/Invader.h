@@ -3,15 +3,23 @@
 
 #include "BibSistema.h" // For GLfloat
 
+// Define InvaderType enum class before it's used in the Invader class
+enum class InvaderType {
+    EXPLORER,
+    SOLDIER,
+    COMMANDER
+};
+
 class Invader {
 public:
     float x, y;
     bool active;
-    // int type; // For different invader types later
+    InvaderType type; // Type of the invader
+    int pointsValue;  // How many points this invader is worth
 
-    Invader(float startX, float startY);
+    Invader(float startX, float startY, InvaderType invaderType); // Updated constructor
     void render();
-    // void update(float deltaTime); // Static invaders for now
+    // void update(float deltaTime); // Static invaders for now, type might influence behavior later
 };
 
 #endif // INVADER_H
